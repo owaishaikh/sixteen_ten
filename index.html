@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>You got a mail 💌</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Pinyon+Script&display=swap" rel="stylesheet">
+<style>
+:root{--red:#e0405f;--ink:#7a2b3b;--paper:#fff8f5}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif;color:var(--ink);background:#fbeaea}
+.page{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:28px 24px;text-align:center;
+  background:radial-gradient(circle at 50% 0,#ffc9d3 0,transparent 45%),radial-gradient(circle at 50% 100%,#ffc9d3 0,transparent 45%),#f8f1ee;
+  background-size:cover;background-position:center}
+.page.active{display:flex;animation:in .6s ease}
+@keyframes in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.script{font-family:'Pinyon Script',cursive;color:var(--red);font-size:2.6rem;line-height:1.15}
+.small{font-size:.85rem;opacity:.7}
+.btn{border:0;border-radius:999px;background:var(--red);color:#fff;font:700 1rem 'Nunito';padding:14px 34px;box-shadow:0 6px 18px rgba(224,64,95,.35)}
+.btn:active{transform:scale(.96)}
+.env{font-size:7rem;animation:float 2.5s ease-in-out infinite;filter:drop-shadow(0 8px 10px rgba(0,0,0,.15))}
+.env img{width:230px;display:block}
+@keyframes float{50%{transform:translateY(-10px)}}
+.opts{display:flex;flex-direction:column;gap:14px;width:100%;max-width:340px}
+.opt{border:2px solid var(--red);background:#fff;color:var(--ink);border-radius:18px;padding:16px;font:700 1.05rem 'Nunito';transition:.2s}
+.opt.sel{background:var(--red);color:#fff;transform:scale(1.03)}
+.letter{background:var(--paper);border-radius:14px;padding:26px 22px;max-width:340px;box-shadow:0 8px 24px rgba(0,0,0,.1);font-size:1.02rem;line-height:1.6;text-align:left;max-height:62vh;overflow:auto}
+.sum{background:var(--paper);border-radius:18px;padding:18px 20px;width:100%;max-width:340px;box-shadow:0 8px 24px rgba(0,0,0,.1);text-align:left}
+.sum div{padding:10px 0;border-bottom:1px dashed #e8b9c1}.sum div:last-child{border:0}
+.sum b{display:block;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--red)}
+.scratch{position:relative;width:290px;height:170px;border-radius:16px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.15)}
+.scratch .msg{position:absolute;inset:0;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:18px;font-family:'Pinyon Script',cursive;font-size:1.9rem;color:var(--red);line-height:1.2}
+.scratch canvas{position:absolute;inset:0;touch-action:none;transition:opacity .8s}
+</style>
+</head>
+<body>
+
+<script>
+/* ========= EDIT THIS ========= */
+const CONFIG = {
+  name: "Her Name",            // shown on greeting pages
+  birthday: "16th October",
+  planDate: "17th October",
+  when: "17th October · 11:00 AM",   // page 9
+  where: "I'll pick you up 💕",        // page 9
+  letter: "Dear you,\n\n[Your letter goes here. Write it from the heart.]\n\nForever yours.",
+  celebrate: "A whole day just for you 🎂",   // fixed line on page 7
+  scratchMsg: "Hidden message goes here 💌",   // page 8
+  closing: "Can't wait to spend the day with you.",
+  // Optional Canva exports (put files in /images). Leave "" to use the built-in look.
+  bg: { p1:"", p2:"", p3:"", p4:"", p5:"", p6:"", p7:"", p8:"", p9:"" },
+  envelopeImg: "images/envelope.png",
+  choices: [                   // pages 4-6 (2-4 options each, single select)
+    { key:"lunch",   title:"Choose our lunch",       opts:["Cafe brunch","Italian","Sushi"] },
+    { key:"activity",title:"Choose our activity",    opts:["Pottery","Bowling","Spa"] },
+    { key:"outing",  title:"Choose outing + dinner", opts:["Sunset drive + rooftop dinner","Movie + fine dining","Beach walk + seafood"] }
+  ]
+};
+/* ============================= */
+</script>
+
+<div id="app"></div>
+
+<script>
+const C = CONFIG, app = document.getElementById('app'), picks = {};
+const sid = Math.random().toString(36).slice(2, 8);
+const nl = s => s.replace(/\n/g, '<br>');
+
+function track(event, data) {
+  try { fetch('/api/save', { method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ sid, event, ...data, picks }), keepalive:true }).catch(()=>{}); } catch(e){}
+}
+
+const pages = [];
+pages.push(`<div class="script">you got a mail</div>
+  <div class="env" onclick="next()">${C.envelopeImg ? `<img src="${C.envelopeImg}">` : '💌'}</div>
+  <div class="script" style="font-size:2.2rem">for you my baby</div><div class="small">(tap to open)</div>`);
+pages.push(`<div class="script" style="font-size:3.2rem">Happy Birthday,<br>${C.name}!</div><div>🎂✨</div>
+  <button class="btn" onclick="next()">Next</button>`);
+pages.push(`<div class="script">A little note</div><div class="letter">${nl(C.letter)}</div>
+  <button class="btn" onclick="next()">Next</button>`);
+C.choices.forEach((c, i) => pages.push(`<div class="script">${c.title}</div>
+  <div class="opts">${c.opts.map(o => `<button class="opt" onclick="pick('${c.key}',this)">${o}</button>`).join('')}</div>`));
+pages.push(`<div class="script">So here's the plan</div><div class="sum" id="sum"></div>
+  <button class="btn" onclick="next()">Love it</button>`);
+pages.push(`<div class="script">One more thing…</div><div class="small">scratch to reveal</div>
+  <div class="scratch"><div class="msg">${C.scratchMsg}</div><canvas id="sc" width="290" height="170"></canvas></div>
+  <button class="btn" id="scNext" style="display:none" onclick="next()">Next</button>`);
+pages.push(`<div class="script" style="font-size:3rem">See you soon</div>
+  <div class="sum" style="text-align:center"><div><b>When</b>${C.when}</div><div><b>Where</b>${C.where}</div></div>
+  <div>${C.closing}</div><div style="font-size:2rem">💕</div>`);
+
+app.innerHTML = pages.map((p, i) => `<section class="page" id="p${i+1}" ${C.bg['p'+(i+1)] ? `style="background-image:url('${C.bg['p'+(i+1)]}')"` : ''}>${p}</section>`).join('');
+
+let cur = 0;
+function show(n) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('p' + (n + 1)).classList.add('active');
+  cur = n; track('view', { page: n + 1 });
+  if (n === 6) buildSummary();
+  if (n === 7) initScratch();
+}
+function next() { if (cur < pages.length - 1) show(cur + 1); }
+
+function pick(key, el) {
+  el.parentElement.querySelectorAll('.opt').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel'); picks[key] = el.textContent;
+  track('pick', { key, value: el.textContent });
+  setTimeout(next, 500);
+}
+
+function buildSummary() {
+  const row = (l, v) => `<div><b>${l}</b>${v}</div>`;
+  document.getElementById('sum').innerHTML =
+    row('Celebrate · ' + C.birthday, C.celebrate) +
+    row('Lunch · ' + C.planDate, picks.lunch || '—') +
+    row('Activity', picks.activity || '—') +
+    row('Outing + Dinner', picks.outing || '—');
+  track('final', {});
+}
+
+let scratchDone = false;
+function initScratch() {
+  const cv = document.getElementById('sc'), ctx = cv.getContext('2d');
+  if (scratchDone || cv.dataset.on) return; cv.dataset.on = 1;
+  const g = ctx.createLinearGradient(0, 0, 290, 170);
+  g.addColorStop(0, '#f2b6c2'); g.addColorStop(1, '#e0405f');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, 290, 170);
+  ctx.fillStyle = '#fff'; ctx.font = '700 16px Nunito'; ctx.textAlign = 'center';
+  ctx.fillText('scratch here ✨', 145, 90);
+  ctx.globalCompositeOperation = 'destination-out';
+  let down = false, n = 0;
+  const xy = e => { const r = cv.getBoundingClientRect(), t = e.touches ? e.touches[0] : e;
+    return [(t.clientX - r.left) * 290 / r.width, (t.clientY - r.top) * 170 / r.height]; };
+  const draw = e => { if (!down) return; e.preventDefault(); const [x, y] = xy(e);
+    ctx.beginPath(); ctx.arc(x, y, 18, 0, 7); ctx.fill();
+    if (++n % 15 === 0) check(); };
+  const check = () => { const d = ctx.getImageData(0, 0, 290, 170).data; let c = 0;
+    for (let i = 3; i < d.length; i += 40) if (d[i] === 0) c++;
+    if (c / (d.length / 40) > 0.45 && !scratchDone) { scratchDone = true; cv.style.opacity = 0;
+      document.getElementById('scNext').style.display = 'block'; track('scratched', {}); } };
+  cv.addEventListener('touchstart', e => { down = true; draw(e); }, { passive:false });
+  cv.addEventListener('touchmove', draw, { passive:false });
+  cv.addEventListener('touchend', () => { down = false; check(); });
+  cv.addEventListener('mousedown', e => { down = true; draw(e); });
+  cv.addEventListener('mousemove', draw);
+  window.addEventListener('mouseup', () => down = false);
+}
+show(0);
+</script>
+</body>
+</html>
