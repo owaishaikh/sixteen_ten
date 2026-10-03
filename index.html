@@ -24,6 +24,13 @@ html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif;color:var(
 .opts{display:flex;flex-direction:column;gap:14px;width:100%;max-width:340px}
 .opt{border:2px solid var(--red);background:#fff;color:var(--ink);border-radius:18px;padding:16px;font:700 1.05rem 'Nunito';transition:.2s}
 .opt.sel{background:var(--red);color:#fff;transform:scale(1.03)}
+.pols{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%}
+.pol{width:58%;max-width:230px;border:0;background:none;padding:0;transition:.25s;filter:drop-shadow(0 8px 12px rgba(0,0,0,.18))}
+.pol img{width:100%;display:block}
+.pol.a{transform:rotate(-7deg);align-self:flex-start;margin-left:8%}
+.pol.b{transform:rotate(6deg);align-self:flex-end;margin-right:8%}
+.pol.sel{filter:drop-shadow(0 0 0 #e0405f) drop-shadow(0 0 10px #e0405f);scale:1.07}
+.or{font-family:'Pinyon Script',cursive;color:#d8142f;font-size:2.6rem}
 .letter{background:var(--paper);border-radius:14px;padding:26px 22px;max-width:340px;box-shadow:0 8px 24px rgba(0,0,0,.1);font-size:1.02rem;line-height:1.6;text-align:left;max-height:62vh;overflow:auto}
 .sum{background:var(--paper);border-radius:18px;padding:18px 20px;width:100%;max-width:340px;box-shadow:0 8px 24px rgba(0,0,0,.1);text-align:left}
 .sum div{padding:10px 0;border-bottom:1px dashed #e8b9c1}.sum div:last-child{border:0}
@@ -51,7 +58,7 @@ const CONFIG = {
   bg: { p1:"", p2:"", p3:"", p4:"", p5:"", p6:"", p7:"", p8:"", p9:"" },
   envelopeImg: "images/envelope.png",
   choices: [                   // pages 4-6 (2-4 options each, single select)
-    { key:"lunch",   title:"Choose our lunch",       opts:["Cafe brunch","Italian","Sushi"] },
+    { key:"lunch",   title:"choose our lunch",       opts:[{id:"option1",label:"Blabber all day",img:"images/lunch1.png"},{id:"option2",label:"ORA kitchen",img:"images/lunch2.png"}] },
     { key:"activity",title:"Choose our activity",    opts:["Pottery","Bowling","Spa"] },
     { key:"outing",  title:"Choose outing + dinner", opts:["Sunset drive + rooftop dinner","Movie + fine dining","Beach walk + seafood"] }
   ]
@@ -79,8 +86,16 @@ pages.push(`<div class="script" style="font-size:3.2rem">Happy Birthday,<br>${C.
   <button class="btn" onclick="next()">Next</button>`);
 pages.push(`<div class="script">A little note</div><div class="letter">${nl(C.letter)}</div>
   <button class="btn" onclick="next()">Next</button>`);
-C.choices.forEach((c, i) => pages.push(`<div class="script">${c.title}</div>
-  <div class="opts">${c.opts.map(o => `<button class="opt" onclick="pick('${c.key}',this)">${o}</button>`).join('')}</div>`));
+C.choices.forEach((c, i) => {
+  const os = c.opts.map(o => typeof o === 'string' ? { id:o, label:o } : o);
+  if (os.every(o => o.img)) {
+    pages.push(`<div><div class="script">${c.title}</div><div class="small">(tap to select)</div></div>
+      <div class="pols">${os.map((o, j) => `<button class="pol ${j % 2 ? 'b' : 'a'}" data-id="${o.id}" data-label="${o.label}" onclick="pick('${c.key}',this)"><img src="${o.img}" alt="${o.label}"></button>${j < os.length - 1 ? '<div class="or">OR</div>' : ''}`).join('')}</div>`);
+  } else {
+    pages.push(`<div class="script">${c.title}</div>
+      <div class="opts">${os.map(o => `<button class="opt" data-id="${o.id}" data-label="${o.label}" onclick="pick('${c.key}',this)">${o.label}</button>`).join('')}</div>`);
+  }
+});
 pages.push(`<div class="script">So here's the plan</div><div class="sum" id="sum"></div>
   <button class="btn" onclick="next()">Love it</button>`);
 pages.push(`<div class="script">One more thing…</div><div class="small">scratch to reveal</div>
@@ -103,10 +118,10 @@ function show(n) {
 function next() { if (cur < pages.length - 1) show(cur + 1); }
 
 function pick(key, el) {
-  el.parentElement.querySelectorAll('.opt').forEach(b => b.classList.remove('sel'));
-  el.classList.add('sel'); picks[key] = el.textContent;
-  track('pick', { key, value: el.textContent });
-  setTimeout(next, 500);
+  el.parentElement.querySelectorAll('.opt,.pol').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel'); picks[key] = el.dataset.label;
+  track('pick', { key, optionId: el.dataset.id, value: el.dataset.label });
+  setTimeout(next, 600);
 }
 
 function buildSummary() {
