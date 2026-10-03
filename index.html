@@ -31,6 +31,14 @@ html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif;color:var(
 .pol.b{transform:rotate(6deg);align-self:flex-end;margin-right:8%}
 .pol.sel{filter:drop-shadow(0 0 0 #e0405f) drop-shadow(0 0 10px #e0405f);scale:1.07}
 .or{font-family:'Pinyon Script',cursive;color:#d8142f;font-size:2.6rem}
+.pop{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:50;background:rgba(248,241,238,.5);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.pop.show{display:flex;animation:in .4s ease}
+.cloud{position:relative;width:min(88vw,340px);animation:popin .5s cubic-bezier(.2,1.4,.4,1)}
+@keyframes popin{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+.cloud svg{width:100%;display:block;filter:drop-shadow(0 8px 14px rgba(0,0,0,.12))}
+.cloud p{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 17%;font-family:'Pinyon Script',cursive;color:#d8142f;font-size:1.75rem;line-height:1.15}
+.cloud img{position:absolute;width:34%;left:-6%;bottom:-42%;animation:float 2.5s ease-in-out infinite}
+.pop .hint{position:absolute;bottom:7%;left:0;right:0;text-align:center;font-size:.85rem;opacity:.7}
 .letter{background:var(--paper);border-radius:14px;padding:26px 22px;max-width:340px;box-shadow:0 8px 24px rgba(0,0,0,.1);font-size:1.02rem;line-height:1.6;text-align:left;max-height:62vh;overflow:auto}
 .sum{background:var(--paper);border-radius:18px;padding:18px 20px;width:100%;max-width:340px;box-shadow:0 8px 24px rgba(0,0,0,.1);text-align:left}
 .sum div{padding:10px 0;border-bottom:1px dashed #e8b9c1}.sum div:last-child{border:0}
@@ -59,7 +67,7 @@ const CONFIG = {
   envelopeImg: "images/envelope.png",
   choices: [                   // pages 4-6 (2-4 options each, single select)
     { key:"lunch",   title:"choose our lunch",       opts:[{id:"option1",label:"Blabber all day",img:"images/lunch1.png"},{id:"option2",label:"ORA kitchen",img:"images/lunch2.png"}] },
-    { key:"activity",title:"Choose our activity",    opts:["Pottery","Bowling","Spa"] },
+    { key:"activity",title:"choose activity",    opts:[{id:"option1",label:"Clay making date",img:"images/activity1.png"},{id:"option2",label:"Puzzle making date",img:"images/activity2.png"}], popup:"+ something special for the birthday girl" },
     { key:"outing",  title:"Choose outing + dinner", opts:["Sunset drive + rooftop dinner","Movie + fine dining","Beach walk + seafood"] }
   ]
 };
@@ -67,6 +75,10 @@ const CONFIG = {
 </script>
 
 <div id="app"></div>
+<div class="pop" id="pop" onclick="closePop()"><div class="cloud">
+  <svg viewBox="0 0 330 205"><g fill="#fbdde0" stroke="#d8142f" stroke-width="5"><circle cx="80" cy="112" r="48"/><circle cx="128" cy="72" r="54"/><circle cx="200" cy="66" r="54"/><circle cx="250" cy="108" r="48"/><circle cx="196" cy="142" r="52"/><circle cx="124" cy="142" r="50"/><ellipse cx="165" cy="105" rx="95" ry="52"/></g><g fill="#fbdde0"><circle cx="80" cy="112" r="48"/><circle cx="128" cy="72" r="54"/><circle cx="200" cy="66" r="54"/><circle cx="250" cy="108" r="48"/><circle cx="196" cy="142" r="52"/><circle cx="124" cy="142" r="50"/><ellipse cx="165" cy="105" rx="95" ry="52"/></g></svg>
+  <p id="popText"></p><img src="images/cat.png" alt=""></div><div class="hint">(tap to continue)</div></div>
+
 
 <script>
 const C = CONFIG, app = document.getElementById('app'), picks = {};
@@ -121,8 +133,12 @@ function pick(key, el) {
   el.parentElement.querySelectorAll('.opt,.pol').forEach(b => b.classList.remove('sel'));
   el.classList.add('sel'); picks[key] = el.dataset.label;
   track('pick', { key, optionId: el.dataset.id, value: el.dataset.label });
-  setTimeout(next, 600);
+  const ch = C.choices.find(c => c.key === key);
+  if (ch.popup) setTimeout(() => { document.getElementById('popText').textContent = ch.popup;
+    document.getElementById('pop').classList.add('show'); track('popup', { key }); }, 600);
+  else setTimeout(next, 600);
 }
+function closePop() { document.getElementById('pop').classList.remove('show'); next(); }
 
 function buildSummary() {
   const row = (l, v) => `<div><b>${l}</b>${v}</div>`;
