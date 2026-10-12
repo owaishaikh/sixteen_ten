@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>You got a mail 💌</title>
+<title>you got a birthday mail! 💌</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Pinyon+Script&display=swap" rel="stylesheet">
 <style>
 :root{--red:#e0405f;--ink:#7a2b3b;--paper:#fff8f5}
@@ -63,6 +63,11 @@ html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif;color:var(
 .row .kit{position:absolute;right:6%;bottom:calc(100% - 8px);width:25%;max-width:84px;pointer-events:none}
 .eh{position:absolute;left:min(9vw,40px);bottom:4vh;width:min(24vw,13vh,110px);animation:float 3s ease-in-out infinite}
 .ec{position:absolute;right:min(9vw,40px);bottom:3vh;width:min(30vw,16vh,130px);animation:float 3.4s ease-in-out infinite}
+.hdr{display:grid;grid-template-columns:21vw 1fr 21vw;align-items:center;width:100%;padding:0 10px;gap:2px;text-align:center}
+.hdr .script{font-size:clamp(1.3rem,6.6vw,2.1rem)}
+.hdr img{width:100%;display:block;max-width:110px}
+.hdr .hl{justify-self:start;margin-top:14px;animation:float 3s ease-in-out infinite}
+.hdr .hr{justify-self:end;margin-top:10px;animation:float 3.4s ease-in-out infinite}
 .p2{padding:0;gap:10px}
 .collage{width:min(100vw,calc((100vh - 170px)*.83));display:block;animation:in .9s ease;
   -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 4%,#000 97%,transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 4%,#000 97%,transparent 100%)}
@@ -95,6 +100,7 @@ const CONFIG = {
   bg: { p1:"", p2:"", p3:"", p4:"", p5:"", p6:"", p7:"", p8:"", p9:"" },
   envelopeImg: "images/envelope.png",
   collageImg: "images/collage.jpg",   // page 2
+  title2: "happy 24th birthday\nmy love", titleLeft: "images/bunnies.png", titleRight: "images/penguins.png",
   endKitten: "images/end_kitten.png", endHamster: "images/end_hamster.png", endCat: "images/end_cat.png",   // page 9
   noteImg: "images/letter.webp", noteCat1: "images/note_cat1.png", noteCat2: "images/note_cat2.png",   // page 3
   choices: [                   // pages 4-6 (2-4 options each, single select)
@@ -126,7 +132,7 @@ const pages = [];
 pages.push(`<div class="script">you got a mail</div>
   <div class="env" onclick="next()">${C.envelopeImg ? `<img src="${C.envelopeImg}">` : '💌'}</div>
   <div class="script" style="font-size:2.2rem">for you my baby</div><div class="small">(tap to open)</div>`);
-pages.push(`<div class="tapwrap p2" onclick="next()"><div class="script">happy birthday<br>my love</div>
+pages.push(`<div class="tapwrap p2" onclick="next()"><div class="hdr"><img class="hl" src="${C.titleLeft}" alt=""><div class="script">${nl(C.title2)}</div><img class="hr" src="${C.titleRight}" alt=""></div>
   <img class="collage" src="${C.collageImg}" alt=""><div class="small">(tap to continue)</div></div>`);
 pages.push(`<div class="tapwrap" onclick="next()"><div class="script">a little note</div>
   <div class="note"><img class="paper" src="${C.noteImg}" alt="letter"><img class="nc1" src="${C.noteCat1}" alt=""><img class="nc2" src="${C.noteCat2}" alt=""></div>
