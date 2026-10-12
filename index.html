@@ -44,6 +44,17 @@ html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif;color:var(
 .note .paper{width:100%;display:block;filter:drop-shadow(0 8px 14px rgba(0,0,0,.18))}
 .note .nc1{position:absolute;width:30%;left:-14%;top:-17%;animation:float 2.8s ease-in-out infinite}
 .note .nc2{position:absolute;width:27%;right:-10%;bottom:-12%;animation:float 3.2s ease-in-out infinite}
+.plan{justify-content:flex-start;padding:4vh 20px 0;gap:8px}
+.rows{width:min(88vw,360px);display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.dateline{position:relative;height:38px;text-align:left}
+.dateline img{position:absolute;left:-8px;top:-30px;width:70px}
+.dateline .script{font-size:1.5rem;margin-left:64px;line-height:38px}
+#sum{display:flex;flex-direction:column;gap:clamp(8px,2vh,15px);text-align:left}
+.row{position:relative;border:1px solid #d8142f;border-radius:14px 34px 34px 14px;padding:clamp(10px,1.9vh,15px) 16px;font-size:.95rem;color:#2b1b1f;box-shadow:5px 5px 0 rgba(240,190,200,.55)}
+.row.pink{background:#fbdde0}.row.cream{background:#f9ecd8}
+.sp{position:absolute;font-style:normal;color:#d8315b;line-height:1}
+.s1{right:-16px;top:-12px;font-size:26px}.s2{right:-24px;top:10px;font-size:13px}.s3{left:-10px;bottom:-10px;font-size:16px}
+.hamster{position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);width:28vw;max-width:130px;pointer-events:none}
 .letter{background:var(--paper);border-radius:14px;padding:26px 22px;max-width:340px;box-shadow:0 8px 24px rgba(0,0,0,.1);font-size:1.02rem;line-height:1.6;text-align:left;max-height:62vh;overflow:auto}
 .sum{background:var(--paper);border-radius:18px;padding:18px 20px;width:100%;max-width:340px;box-shadow:0 8px 24px rgba(0,0,0,.1);text-align:left}
 .sum div{padding:10px 0;border-bottom:1px dashed #e8b9c1}.sum div:last-child{border:0}
@@ -64,7 +75,9 @@ const CONFIG = {
   when: "17th October · 11:00 AM",   // page 9
   where: "I'll pick you up 💕",        // page 9
   letter: "Dear you,\n\n[Your letter goes here. Write it from the heart.]\n\nForever yours.",
-  celebrate: "A whole day just for you 🎂",   // fixed line on page 7
+  celebrate: "celebrateeee wuhuuuuuu",   // page 7 rows
+  special: ["something special - 1/2","something special - 2/2"],
+  planHamster: "images/hamster.png", planBalloons: "images/balloons.png",
   scratchMsg: "Hidden message goes here 💌",   // page 8
   closing: "Can't wait to spend the day with you.",
   // Optional Canva exports (put files in /images). Leave "" to use the built-in look.
@@ -115,8 +128,10 @@ C.choices.forEach((c, i) => {
       <div class="opts">${os.map(o => `<button class="opt" data-id="${o.id}" data-label="${o.label}" onclick="pick('${c.key}',this)">${o.label}</button>`).join('')}</div>`);
   }
 });
-pages.push(`<div class="script">So here's the plan</div><div class="sum" id="sum"></div>
-  <button class="btn" onclick="next()">Love it</button>`);
+pages.push(`<div class="tapwrap plan" onclick="next()"><div><div class="script">so here's the plan</div><div class="small">(oops - i mean TDL)</div></div>
+  <div class="rows"><div class="dateline"><img src="${C.planBalloons}" alt=""><span class="script">${C.planDate.replace('17th October','17th October')}</span></div>
+  <div id="sum"></div></div><div class="small">(tap to continue)</div>
+  <img class="hamster" src="${C.planHamster}" alt=""></div>`);
 pages.push(`<div class="script">One more thing…</div><div class="small">scratch to reveal</div>
   <div class="scratch"><div class="msg">${C.scratchMsg}</div><canvas id="sc" width="290" height="170"></canvas></div>
   <button class="btn" id="scNext" style="display:none" onclick="next()">Next</button>`);
@@ -148,12 +163,10 @@ function pick(key, el) {
 function closePop() { document.getElementById('pop').classList.remove('show'); next(); }
 
 function buildSummary() {
-  const row = (l, v) => `<div><b>${l}</b>${v}</div>`;
-  document.getElementById('sum').innerHTML =
-    row('Celebrate · ' + C.birthday, C.celebrate) +
-    row('Lunch · ' + C.planDate, picks.lunch || '—') +
-    row('Activity', picks.activity || '—') +
-    row('Outing + Dinner', picks.outing || '—');
+  const rows = ['lunch - ' + (picks.lunch || '—'), C.celebrate, 'activity - ' + (picks.activity || '—'),
+    C.special[0], 'outing + dinner - ' + (picks.outing || '—'), C.special[1]];
+  document.getElementById('sum').innerHTML = rows.map((t, i) =>
+    `<div class="row ${i % 2 ? 'cream' : 'pink'}">${t}<i class="sp s1">✦</i><i class="sp s2">✦</i><i class="sp s3">✦</i></div>`).join('');
   track('final', {});
 }
 
