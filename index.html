@@ -89,7 +89,7 @@ const CONFIG = {
   scratchMsg: "both the surprises\nare indoors\n+ carry toiletries",   // page 8
   closing: "can't wait to spend the day with you",
   // Optional Canva exports (put files in /images). Leave "" to use the built-in look.
-  bg: { p1:"", p2:"", p3:"", p4:"", p5:"", p6:"", p7:"", p8:"", p9:"" },
+  bg: { p1:"", p2:"images/page2.png", p3:"", p4:"", p5:"", p6:"", p7:"", p8:"", p9:"" },
   envelopeImg: "images/envelope.png",
   endKitten: "images/end_kitten.png", endHamster: "images/end_hamster.png", endCat: "images/end_cat.png",   // page 9
   noteImg: "images/letter.webp", noteCat1: "images/note_cat1.png", noteCat2: "images/note_cat2.png",   // page 3
@@ -122,8 +122,8 @@ const pages = [];
 pages.push(`<div class="script">you got a mail</div>
   <div class="env" onclick="next()">${C.envelopeImg ? `<img src="${C.envelopeImg}">` : '💌'}</div>
   <div class="script" style="font-size:2.2rem">for you my baby</div><div class="small">(tap to open)</div>`);
-pages.push(`<div class="script" style="font-size:3.2rem">Happy Birthday,<br>${C.name}!</div><div>🎂✨</div>
-  <button class="btn" onclick="next()">Next</button>`);
+pages.push(C.bg.p2 ? `<div class="tapwrap" onclick="next()"></div>` :
+  `<div class="tapwrap" onclick="next()"><div class="script" style="font-size:3.2rem">happy birthday<br>my love</div><div class="small">(tap to continue)</div></div>`);
 pages.push(`<div class="tapwrap" onclick="next()"><div class="script">a little note</div>
   <div class="note"><img class="paper" src="${C.noteImg}" alt="letter"><img class="nc1" src="${C.noteCat1}" alt=""><img class="nc2" src="${C.noteCat2}" alt=""></div>
   <div class="small">(tap to say yes)</div></div>`);
