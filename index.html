@@ -63,6 +63,9 @@ html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif;color:var(
 .row .kit{position:absolute;right:6%;bottom:calc(100% - 8px);width:25%;max-width:84px;pointer-events:none}
 .eh{position:absolute;left:min(9vw,40px);bottom:4vh;width:min(24vw,13vh,110px);animation:float 3s ease-in-out infinite}
 .ec{position:absolute;right:min(9vw,40px);bottom:3vh;width:min(30vw,16vh,130px);animation:float 3.4s ease-in-out infinite}
+.p2{padding:0;gap:10px}
+.collage{width:min(100vw,calc((100vh - 170px)*.83));display:block;animation:in .9s ease;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 4%,#000 97%,transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 4%,#000 97%,transparent 100%)}
 .letter{background:var(--paper);border-radius:14px;padding:26px 22px;max-width:340px;box-shadow:0 8px 24px rgba(0,0,0,.1);font-size:1.02rem;line-height:1.6;text-align:left;max-height:62vh;overflow:auto}
 .sum{background:var(--paper);border-radius:18px;padding:18px 20px;width:100%;max-width:340px;box-shadow:0 8px 24px rgba(0,0,0,.1);text-align:left}
 .sum div{padding:10px 0;border-bottom:1px dashed #e8b9c1}.sum div:last-child{border:0}
@@ -89,8 +92,9 @@ const CONFIG = {
   scratchMsg: "both the surprises\nare indoors\n+ carry toiletries",   // page 8
   closing: "can't wait to spend the day with you",
   // Optional Canva exports (put files in /images). Leave "" to use the built-in look.
-  bg: { p1:"", p2:"images/page2.png", p3:"", p4:"", p5:"", p6:"", p7:"", p8:"", p9:"" },
+  bg: { p1:"", p2:"", p3:"", p4:"", p5:"", p6:"", p7:"", p8:"", p9:"" },
   envelopeImg: "images/envelope.png",
+  collageImg: "images/collage.jpg",   // page 2
   endKitten: "images/end_kitten.png", endHamster: "images/end_hamster.png", endCat: "images/end_cat.png",   // page 9
   noteImg: "images/letter.webp", noteCat1: "images/note_cat1.png", noteCat2: "images/note_cat2.png",   // page 3
   choices: [                   // pages 4-6 (2-4 options each, single select)
@@ -122,8 +126,8 @@ const pages = [];
 pages.push(`<div class="script">you got a mail</div>
   <div class="env" onclick="next()">${C.envelopeImg ? `<img src="${C.envelopeImg}">` : '💌'}</div>
   <div class="script" style="font-size:2.2rem">for you my baby</div><div class="small">(tap to open)</div>`);
-pages.push(C.bg.p2 ? `<div class="tapwrap" onclick="next()"></div>` :
-  `<div class="tapwrap" onclick="next()"><div class="script" style="font-size:3.2rem">happy birthday<br>my love</div><div class="small">(tap to continue)</div></div>`);
+pages.push(`<div class="tapwrap p2" onclick="next()"><div class="script">happy birthday<br>my love</div>
+  <img class="collage" src="${C.collageImg}" alt=""><div class="small">(tap to continue)</div></div>`);
 pages.push(`<div class="tapwrap" onclick="next()"><div class="script">a little note</div>
   <div class="note"><img class="paper" src="${C.noteImg}" alt="letter"><img class="nc1" src="${C.noteCat1}" alt=""><img class="nc2" src="${C.noteCat2}" alt=""></div>
   <div class="small">(tap to say yes)</div></div>`);
