@@ -55,6 +55,14 @@ html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif;color:var(
 .sp{position:absolute;font-style:normal;color:#d8315b;line-height:1}
 .s1{right:-16px;top:-12px;font-size:26px}.s2{right:-24px;top:10px;font-size:13px}.s3{left:-10px;bottom:-10px;font-size:16px}
 .hamster{position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);width:min(28vw,13vh,130px);pointer-events:none}
+.end{width:min(76vw,320px);display:flex;flex-direction:column;gap:8px;align-items:stretch}
+.end .lbl,.end .closing{text-align:center}
+.lbl{font-weight:700;letter-spacing:.16em;color:#d8142f;font-size:1rem}
+.closing{font-size:.78rem;letter-spacing:.14em;color:#7a4a3a;margin-top:14px}
+.row.c{text-align:center}
+.row .kit{position:absolute;right:6%;bottom:calc(100% - 8px);width:25%;max-width:84px;pointer-events:none}
+.eh{position:absolute;left:min(9vw,40px);bottom:4vh;width:min(24vw,13vh,110px);animation:float 3s ease-in-out infinite}
+.ec{position:absolute;right:min(9vw,40px);bottom:3vh;width:min(30vw,16vh,130px);animation:float 3.4s ease-in-out infinite}
 .letter{background:var(--paper);border-radius:14px;padding:26px 22px;max-width:340px;box-shadow:0 8px 24px rgba(0,0,0,.1);font-size:1.02rem;line-height:1.6;text-align:left;max-height:62vh;overflow:auto}
 .sum{background:var(--paper);border-radius:18px;padding:18px 20px;width:100%;max-width:340px;box-shadow:0 8px 24px rgba(0,0,0,.1);text-align:left}
 .sum div{padding:10px 0;border-bottom:1px dashed #e8b9c1}.sum div:last-child{border:0}
@@ -72,17 +80,18 @@ const CONFIG = {
   name: "Her Name",            // shown on greeting pages
   birthday: "16th October",
   planDate: "17th October",
-  when: "17th October · 11:00 AM",   // page 9
-  where: "I'll pick you up 💕",        // page 9
+  when: "17th October, 11:00 AM",   // page 9
+  where: "I'll pick you up from - The Walk, Thane",   // page 9
   letter: "Dear you,\n\n[Your letter goes here. Write it from the heart.]\n\nForever yours.",
   celebrate: "celebrateeee wuhuuuuuu",   // page 7 rows
   special: ["something special - 1/2","something special - 2/2"],
   planHamster: "images/hamster.png", planBalloons: "images/balloons.png",
   scratchMsg: "both the surprises\nare indoors\n+ carry toiletries",   // page 8
-  closing: "Can't wait to spend the day with you.",
+  closing: "can't wait to spend the day with you",
   // Optional Canva exports (put files in /images). Leave "" to use the built-in look.
   bg: { p1:"", p2:"", p3:"", p4:"", p5:"", p6:"", p7:"", p8:"", p9:"" },
   envelopeImg: "images/envelope.png",
+  endKitten: "images/end_kitten.png", endHamster: "images/end_hamster.png", endCat: "images/end_cat.png",   // page 9
   noteImg: "images/letter.webp", noteCat1: "images/note_cat1.png", noteCat2: "images/note_cat2.png",   // page 3
   choices: [                   // pages 4-6 (2-4 options each, single select)
     { key:"lunch",   title:"choose our lunch",       opts:[{id:"option1",label:"Blabber all day",img:"images/lunch1.png"},{id:"option2",label:"ORA kitchen",img:"images/lunch2.png"}] },
@@ -135,9 +144,13 @@ pages.push(`<div class="tapwrap plan" onclick="next()"><div><div class="script">
 pages.push(`<div class="script">One more thing…</div><div class="small">scratch to reveal</div>
   <div class="scratch"><div class="msg">${nl(C.scratchMsg)}</div><canvas id="sc" width="290" height="170"></canvas></div>
   <button class="btn" id="scNext" style="display:none" onclick="next()">Next</button>`);
-pages.push(`<div class="script" style="font-size:3rem">See you soon</div>
-  <div class="sum" style="text-align:center"><div><b>When</b>${C.when}</div><div><b>Where</b>${C.where}</div></div>
-  <div>${C.closing}</div><div style="font-size:2rem">💕</div>`);
+pages.push(`<div class="end"><div class="script" style="font-size:3rem;margin-bottom:34px">see you soon</div>
+  <div class="lbl">WHEN</div>
+  <div class="row pink c"><img class="kit" src="${C.endKitten}" alt="">${C.when}<i class="sp s1">✦</i><i class="sp s2">✦</i><i class="sp s3">✦</i></div>
+  <div class="lbl" style="margin-top:14px">WHERE</div>
+  <div class="row cream c">${C.where}<i class="sp s1">✦</i><i class="sp s2">✦</i><i class="sp s3">✦</i></div>
+  <div class="closing">${C.closing}</div></div>
+  <img class="eh" src="${C.endHamster}" alt=""><img class="ec" src="${C.endCat}" alt="">`);
 
 app.innerHTML = pages.map((p, i) => `<section class="page" id="p${i+1}" ${C.bg['p'+(i+1)] ? `style="background-image:url('${C.bg['p'+(i+1)]}')"` : ''}>${p}</section>`).join('');
 
