@@ -48,7 +48,7 @@ html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif;color:var(
 .rows{width:min(76vw,320px);display:flex;flex-direction:column;gap:6px;margin-top:6px}
 .dateline{position:relative;height:42px;text-align:left}
 .dateline img{position:absolute;left:-8px;top:-30px;width:70px}
-.dateline .script{font-size:2rem;margin-left:62px;line-height:38px;color:#d8142f;-webkit-text-stroke:.8px #d8142f;background:linear-gradient(transparent 62%,rgba(255,170,185,.75) 62%);padding:0 6px}
+.dateline .script{font-size:2rem;margin-left:62px;line-height:38px;color:#d8142f;-webkit-text-stroke:.8px #d8142f}
 #sum{display:flex;flex-direction:column;gap:clamp(8px,2vh,15px);text-align:left}
 .row{position:relative;border:1px solid #d8142f;border-radius:14px 34px 34px 14px;padding:clamp(10px,1.9vh,15px) 16px;font-size:.95rem;color:#2b1b1f;box-shadow:5px 5px 0 rgba(240,190,200,.55)}
 .row.pink{background:#fbdde0}.row.cream{background:#f9ecd8}
@@ -60,7 +60,7 @@ html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif;color:var(
 .sum div{padding:10px 0;border-bottom:1px dashed #e8b9c1}.sum div:last-child{border:0}
 .sum b{display:block;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--red)}
 .scratch{position:relative;width:290px;height:170px;border-radius:16px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.15)}
-.scratch .msg{position:absolute;inset:0;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:18px;font-family:'Pinyon Script',cursive;font-size:1.9rem;color:var(--red);line-height:1.2}
+.scratch .msg{position:absolute;inset:0;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:18px;font-family:'Pinyon Script',cursive;font-size:1.7rem;color:var(--red);line-height:1.2}
 .scratch canvas{position:absolute;inset:0;touch-action:none;transition:opacity .8s}
 </style>
 </head>
@@ -78,7 +78,7 @@ const CONFIG = {
   celebrate: "celebrateeee wuhuuuuuu",   // page 7 rows
   special: ["something special - 1/2","something special - 2/2"],
   planHamster: "images/hamster.png", planBalloons: "images/balloons.png",
-  scratchMsg: "Hidden message goes here 💌",   // page 8
+  scratchMsg: "both the surprises\nare indoors\n+ carry toiletries",   // page 8
   closing: "Can't wait to spend the day with you.",
   // Optional Canva exports (put files in /images). Leave "" to use the built-in look.
   bg: { p1:"", p2:"", p3:"", p4:"", p5:"", p6:"", p7:"", p8:"", p9:"" },
@@ -133,7 +133,7 @@ pages.push(`<div class="tapwrap plan" onclick="next()"><div><div class="script">
   <div id="sum"></div></div><div class="small">(tap to continue)</div>
   <img class="hamster" src="${C.planHamster}" alt=""></div>`);
 pages.push(`<div class="script">One more thing…</div><div class="small">scratch to reveal</div>
-  <div class="scratch"><div class="msg">${C.scratchMsg}</div><canvas id="sc" width="290" height="170"></canvas></div>
+  <div class="scratch"><div class="msg">${nl(C.scratchMsg)}</div><canvas id="sc" width="290" height="170"></canvas></div>
   <button class="btn" id="scNext" style="display:none" onclick="next()">Next</button>`);
 pages.push(`<div class="script" style="font-size:3rem">See you soon</div>
   <div class="sum" style="text-align:center"><div><b>When</b>${C.when}</div><div><b>Where</b>${C.where}</div></div>
