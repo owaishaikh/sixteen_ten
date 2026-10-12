@@ -39,6 +39,11 @@ html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif;color:var(
 .cloud p{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 17%;font-family:'Pinyon Script',cursive;color:#d8142f;font-size:1.75rem;line-height:1.15}
 .cloud img{position:absolute;width:34%;left:-6%;bottom:-42%;animation:float 2.5s ease-in-out infinite}
 .pop .hint{position:absolute;bottom:7%;left:0;right:0;text-align:center;font-size:.85rem;opacity:.7}
+.tapwrap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:20px 24px}
+.note{position:relative;width:min(80vw,calc(54vh*.735));transform:rotate(2deg);margin:8px 0 18px}
+.note .paper{width:100%;display:block;filter:drop-shadow(0 8px 14px rgba(0,0,0,.18))}
+.note .nc1{position:absolute;width:30%;left:-14%;top:-17%;animation:float 2.8s ease-in-out infinite}
+.note .nc2{position:absolute;width:27%;right:-10%;bottom:-12%;animation:float 3.2s ease-in-out infinite}
 .letter{background:var(--paper);border-radius:14px;padding:26px 22px;max-width:340px;box-shadow:0 8px 24px rgba(0,0,0,.1);font-size:1.02rem;line-height:1.6;text-align:left;max-height:62vh;overflow:auto}
 .sum{background:var(--paper);border-radius:18px;padding:18px 20px;width:100%;max-width:340px;box-shadow:0 8px 24px rgba(0,0,0,.1);text-align:left}
 .sum div{padding:10px 0;border-bottom:1px dashed #e8b9c1}.sum div:last-child{border:0}
@@ -65,6 +70,7 @@ const CONFIG = {
   // Optional Canva exports (put files in /images). Leave "" to use the built-in look.
   bg: { p1:"", p2:"", p3:"", p4:"", p5:"", p6:"", p7:"", p8:"", p9:"" },
   envelopeImg: "images/envelope.png",
+  noteImg: "images/letter.webp", noteCat1: "images/note_cat1.png", noteCat2: "images/note_cat2.png",   // page 3
   choices: [                   // pages 4-6 (2-4 options each, single select)
     { key:"lunch",   title:"choose our lunch",       opts:[{id:"option1",label:"Blabber all day",img:"images/lunch1.png"},{id:"option2",label:"ORA kitchen",img:"images/lunch2.png"}] },
     { key:"activity",title:"choose activity",    opts:[{id:"option1",label:"Clay making date",img:"images/activity1.png"},{id:"option2",label:"Puzzle making date",img:"images/activity2.png"}], popup:"+ something special for the birthday girl" },
@@ -96,8 +102,9 @@ pages.push(`<div class="script">you got a mail</div>
   <div class="script" style="font-size:2.2rem">for you my baby</div><div class="small">(tap to open)</div>`);
 pages.push(`<div class="script" style="font-size:3.2rem">Happy Birthday,<br>${C.name}!</div><div>🎂✨</div>
   <button class="btn" onclick="next()">Next</button>`);
-pages.push(`<div class="script">A little note</div><div class="letter">${nl(C.letter)}</div>
-  <button class="btn" onclick="next()">Next</button>`);
+pages.push(`<div class="tapwrap" onclick="next()"><div class="script">a little note</div>
+  <div class="note"><img class="paper" src="${C.noteImg}" alt="letter"><img class="nc1" src="${C.noteCat1}" alt=""><img class="nc2" src="${C.noteCat2}" alt=""></div>
+  <div class="small">(tap to say yes)</div></div>`);
 C.choices.forEach((c, i) => {
   const os = c.opts.map(o => typeof o === 'string' ? { id:o, label:o } : o);
   if (os.every(o => o.img)) {
